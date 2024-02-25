@@ -79,7 +79,9 @@ class Link_State_Node(Node):
 
         # Check potential nodes
         while queue:
-            node = queue.pop(0)
+            # node = queue.pop(0)
+            node = min(queue, key=lambda x: x["cost"])
+            queue.remove(node)
 
             # Reached destination node
             if node["id"] == destination:
@@ -99,7 +101,7 @@ class Link_State_Node(Node):
                             "next": neighbor if self.id == node["id"] else node["next"]
                         })
 
-            # Sort queue to get next min cost value
-            queue.sort(key=lambda x: x["cost"])
+            # # Sort queue to get next min cost value
+            # queue.sort(key=lambda x: x["cost"])
 
         return -1
