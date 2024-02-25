@@ -101,7 +101,4 @@ class Link_State_Node(Node):
                             "next": neighbor if self.id == node["id"] else node["next"]
                         })
 
-            # # Sort queue to get next min cost value
-            # queue.sort(key=lambda x: x["cost"])
-
         return -1
