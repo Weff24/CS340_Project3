@@ -31,7 +31,6 @@ class Distance_Vector_Node(Node):
             self.neighbors.append(neighbor)
         
             self.links[neighbor] = latency
-        # self.update_dv()
 
 
         # prev_dvs = copy.deepcopy(self.dvs)
@@ -45,10 +44,9 @@ class Distance_Vector_Node(Node):
         #     "path": [neighbor]
         # }
 
-        # self.update_dv()
-
         # for (n, neighbor_dv) in self.neighboring_dvs.items():
         #     self.update_dv(n, neighbor_dv)
+            
         self.dvs = {}
         for (n, cost) in self.links.items():
             self.dvs[n] = {
@@ -65,17 +63,18 @@ class Distance_Vector_Node(Node):
         # print(self.neighboring_dvs)
         # print(self.links)
         for (n, neighbor_dv) in self.neighboring_dvs.items():
-            for (destination, val) in neighbor_dv.items():
-                if destination == self.id or self.id in val["path"] or val["cost"] <= 0 or n not in self.links:
-                    continue
+            if n in self.links:
+                for (destination, val) in neighbor_dv.items():
+                    if destination == self.id or self.id in val["path"] or val["cost"] <= 0:
+                        continue
 
-                if (destination not in self.dvs.keys()) or ((destination in self.dvs.keys()) and (self.links[n] + val["cost"] < self.dvs[destination]["cost"])):
-                    new_path = copy.deepcopy(val["path"])
-                    new_path.insert(0, self.id)
-                    self.dvs[destination] = {
-                        "cost": self.links[n] + val["cost"],
-                        "path": new_path
-                    }
+                    if (destination not in self.dvs.keys()) or ((destination in self.dvs.keys()) and (self.links[n] + val["cost"] < self.dvs[destination]["cost"])):
+                        new_path = copy.deepcopy(val["path"])
+                        new_path.insert(0, self.id)
+                        self.dvs[destination] = {
+                            "cost": self.links[n] + val["cost"],
+                            "path": new_path
+                        }
 
 
     def get_message(self):
@@ -112,6 +111,10 @@ class Distance_Vector_Node(Node):
                     "cost": cost,
                     "path": [self.id, n]
                 }
+                
+            # for dest in parsed_neighboring_dvs.keys():
+            #     if dest in self.dvs and neighbor in self.dvs[dest]["path"]:
+            #         del self.dvs[dest]
             
             self.update_dv()
             # print("HIHIHIHIH")
