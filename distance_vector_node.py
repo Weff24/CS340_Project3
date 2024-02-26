@@ -1,6 +1,5 @@
 from simulator.node import Node
 import json
-import copy
 
 
 class Distance_Vector_Node(Node):
@@ -54,7 +53,7 @@ class Distance_Vector_Node(Node):
 
                     # Update distance vector based on cost
                     if (destination not in self.dvs.keys()) or ((destination in self.dvs.keys()) and (self.links[n] + val["cost"] < self.dvs[destination]["cost"])):
-                        new_path = copy.deepcopy(val["path"])
+                        new_path = val["path"].copy()
                         new_path.insert(0, self.id)
                         self.dvs[destination] = {
                             "cost": self.links[n] + val["cost"],
@@ -68,13 +67,13 @@ class Distance_Vector_Node(Node):
             "seq_num": self.seq_num
         }
         for (key, val) in self.dvs.items():
-            message[self.id][str(key)] = copy.deepcopy(val)
+            message[self.id][str(key)] = val
         return message
 
     # Fill in this function
     def process_incoming_routing_message(self, m):
         # Make a copy of node's distance vectors to check for changes
-        prev_dvs = copy.deepcopy(self.dvs)
+        prev_dvs = self.dvs.copy()
 
         # Load message
         neighboring_dv = json.loads(m)
